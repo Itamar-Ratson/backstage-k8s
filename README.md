@@ -38,8 +38,6 @@ sudo apt-get install -y python3 g++ build-essential
 
 ```bash
 npx @backstage/create-app@latest
-# Enter a name when prompted, e.g., "backstage"
-
 cd backstage
 ```
 
