@@ -68,7 +68,7 @@ The `app-config.production.yaml` must include `dangerouslyAllowOutsideDevelopmen
 Build the image with a version tag. Using semantic versioning makes it easier to track changes and avoid caching issues:
 
 ```bash
-docker build -t backstage:1.0.0 .
+docker build -t backstage:1.0.0 -f Dockerfile backstage/
 ```
 
 ## Step 4: Set Up Kubernetes Resources
@@ -158,7 +158,7 @@ When you make changes and need to redeploy, always use a new image tag. Kubernet
 # Make your changes to the source code or configuration
 
 # Build with a new tag
-docker build -t backstage:1.0.1 .
+docker build -t backstage:1.0.1 -f Dockerfile backstage/
 
 # Load the new image into minikube
 minikube image load backstage:1.0.1
