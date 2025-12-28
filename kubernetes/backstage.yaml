@@ -16,7 +16,7 @@ spec:
       containers:
         - name: backstage
           image: backstage:1.0.0
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never # for local environment only
           ports:
             - name: http
               containerPort: 7007
