@@ -84,11 +84,7 @@ kubectl create namespace backstage
 The secret must include all four environment variables that `app-config.production.yaml` references. Missing `POSTGRES_HOST` or `POSTGRES_PORT` will cause Backstage to fail with "Port should be >= 0 and < 65536. Received type number (NaN)" because the missing values parse as NaN.
 
 ```bash
-kubectl create secret generic postgres-secrets -n backstage \
-  --from-literal=POSTGRES_HOST=postgres \
-  --from-literal=POSTGRES_PORT=5432 \
-  --from-literal=POSTGRES_USER=backstage \
-  --from-literal=POSTGRES_PASSWORD=hunter2
+kubectl apply -f kubernetes/postgres-secrets.yaml
 ```
 
 ### Deploy PostgreSQL
