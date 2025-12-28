@@ -54,7 +54,6 @@ Several files need to be created or modified from the defaults. The complete fil
 | `Dockerfile` | Multi-stage build that compiles everything inside Docker |
 | `.dockerignore` | Must NOT exclude source files (unlike the host build version) |
 | `.gitignore` | Standard Node.js/Yarn exclusions |
-| `app-config.yaml` | Base configuration for Backstage |
 | `app-config.production.yaml` | Production overrides with database connection and guest auth enabled |
 
 Key configuration notes:
