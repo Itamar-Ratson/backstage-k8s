@@ -38,10 +38,9 @@ sudo apt-get install -y python3 g++ build-essential
 
 ```bash
 npx @backstage/create-app@latest
-cd backstage
 ```
 
-This scaffolds a complete Backstage application with all necessary files.
+This scaffolds a complete Backstage application in a `backstage/` folder with all necessary files.
 
 ## Step 2: Configure Repository Files
 
@@ -56,7 +55,11 @@ Several files need to be created or modified from the defaults. The complete fil
 
 Key configuration notes:
 
-The `.dockerignore` must use the multi-stage version that does NOT exclude `packages/*/src`. The default from `create-app` excludes source files, which causes `yarn tsc` to fail with "No inputs were found".
+The `.dockerignore` must use the multi-stage version that does NOT exclude `packages/*/src`. The default from `create-app` excludes source files, which causes `yarn tsc` to fail with "No inputs were found". Copy the `.dockerignore` from the repo root into the backstage folder before building:
+
+```bash
+cp .dockerignore backstage/
+```
 
 The `app-config.production.yaml` must include `dangerouslyAllowOutsideDevelopment: true` under the guest auth provider. Without this, you will get 401 Unauthorized errors because guest auth is disabled by default in containerized environments.
 
@@ -65,7 +68,7 @@ The `app-config.production.yaml` must include `dangerouslyAllowOutsideDevelopmen
 Build the image with a version tag. Using semantic versioning makes it easier to track changes and avoid caching issues:
 
 ```bash
-docker build -t backstage:1.0.0 .
+docker build -t backstage:1.0.0 backstage/
 ```
 
 ## Step 4: Set Up Kubernetes Resources
@@ -73,23 +76,18 @@ docker build -t backstage:1.0.0 .
 ### Create Namespace
 
 ```bash
-kubectl create namespace backstage
-```
-
-### Create Kubernetes Secrets
-
-The secret must include all four environment variables that `app-config.production.yaml` references. Missing `POSTGRES_HOST` or `POSTGRES_PORT` will cause Backstage to fail with "Port should be >= 0 and < 65536. Received type number (NaN)" because the missing values parse as NaN.
-
-```bash
-kubectl apply -f kubernetes/postgres-secrets.yaml
+kubectl apply -f kubernetes/namespace.yaml
 ```
 
 ### Deploy PostgreSQL
 
-Apply the PostgreSQL deployment from the kubernetes directory:
+Apply the PostgreSQL resources in order (secrets and storage must exist before the deployment references them):
 
 ```bash
-kubectl apply -f kubernetes/postgres-deployment.yaml
+kubectl apply -f kubernetes/postgres-secrets.yaml
+kubectl apply -f kubernetes/postgres-storage.yaml
+kubectl apply -f kubernetes/postgres-service.yaml
+kubectl apply -f kubernetes/postgres.yaml
 ```
 
 Wait for PostgreSQL to be ready:
@@ -101,7 +99,7 @@ kubectl get pods -n backstage -w
 
 ### Deploy Backstage
 
-The `backstage-deployment.yaml` includes `imagePullPolicy: Never`, which tells Kubernetes to use the locally loaded image rather than trying to pull from a registry.
+The `backstage.yaml` includes `imagePullPolicy: Never`, which tells Kubernetes to use the locally loaded image rather than trying to pull from a registry.
 
 ## Step 5: Load Image into Minikube and Deploy
 
@@ -120,7 +118,9 @@ minikube image ls | grep backstage
 Now deploy Backstage:
 
 ```bash
-kubectl apply -f kubernetes/backstage-deployment.yaml
+kubectl apply -f kubernetes/backstage-secrets.yaml
+kubectl apply -f kubernetes/backstage-service.yaml
+kubectl apply -f kubernetes/backstage.yaml
 ```
 
 Watch the pod status until it shows `1/1 Running`:
@@ -155,7 +155,7 @@ When you make changes and need to redeploy, always use a new image tag. Kubernet
 # Make your changes to the source code or configuration
 
 # Build with a new tag
-docker build -t backstage:1.0.1 .
+docker build -t backstage:1.0.1 backstage/
 
 # Load the new image into minikube
 minikube image load backstage:1.0.1
