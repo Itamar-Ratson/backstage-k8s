@@ -1,41 +1,16 @@
-# Dependencies
-node_modules/
+# Ignore everything
+*
 
-# Build outputs
-dist/
-dist-types/
-packages/*/dist/
-plugins/*/dist/
+# Allow specific files and folders
+!.gitignore
+!README.md
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
+# Allow kubernetes folder
+!kubernetes/
+!kubernetes/*.yaml
 
-# Local configuration (contains secrets)
-*.local.yaml
-
-# Swap
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Test coverage
-coverage/
-
-# Temporary files
-*.tmp
-*.temp
+# Allow backstage config files
+!backstage/
+!backstage/Dockerfile
+!backstage/.dockerignore
+!backstage/app-config.production.yaml
