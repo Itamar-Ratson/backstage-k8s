@@ -19,7 +19,7 @@ plugins/*/dist/
 # Local configuration (contains secrets)
 *.local.yaml
 
-# IDE
+# Swap
 *.swp
 *.swo
 
