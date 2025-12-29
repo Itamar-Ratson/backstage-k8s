@@ -55,10 +55,10 @@ Several files need to be created or modified from the defaults. The complete fil
 
 Key configuration notes:
 
-The `.dockerignore` must use the multi-stage version that does NOT exclude `packages/*/src`. The default from `create-app` excludes source files, which causes `yarn tsc` to fail with "No inputs were found". Copy the `.dockerignore` from the repo root into the backstage folder before building:
+The `.dockerignore` must use the multi-stage version that does NOT exclude `packages/*/src`. The default from `create-app` excludes source files, which causes `yarn tsc` to fail with "No inputs were found". Copy the `Dockerfile` and `.dockerignore` from the repo root into the backstage folder before building:
 
 ```bash
-cp .dockerignore backstage/
+cp Dockerfile .dockerignore backstage/
 ```
 
 The `app-config.production.yaml` must include `dangerouslyAllowOutsideDevelopment: true` under the guest auth provider. Without this, you will get 401 Unauthorized errors because guest auth is disabled by default in containerized environments.
